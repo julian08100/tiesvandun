@@ -1092,8 +1092,9 @@ gs.addEventListener('mousemove', e => {
     e.preventDefault();
     gs.scrollLeft = sl - (e.pageX - gs.offsetLeft - sx) * 1.6;
 });
-// ── HOTJAR — loads only after consent
-function loadHotjar() {
+// ── TRACKERS — load only after consent
+function loadTrackers() {
+    // Hotjar
     (function(h,o,t,j,a,r){
         h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
         h._hjSettings={hjid:YOUR_HOTJAR_SITE_ID,hjsv:6}; // ← replace YOUR_HOTJAR_SITE_ID
@@ -1102,6 +1103,10 @@ function loadHotjar() {
         r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
         a.appendChild(r);
     })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    // ContentSquare
+    var cs=document.createElement('script');cs.async=1;
+    cs.src='https://t.contentsquare.net/uxa/8c97f5ee65968.js';
+    document.head.appendChild(cs);
 }
 
 // ── COOKIE CONSENT
@@ -1111,13 +1116,13 @@ const consent = localStorage.getItem('tvd-consent');
 if (!consent) {
     setTimeout(() => banner.classList.add('visible'), 1400);
 } else if (consent === 'accepted') {
-    loadHotjar();
+    loadTrackers();
 }
 
 document.getElementById('cookie-accept').addEventListener('click', () => {
     localStorage.setItem('tvd-consent', 'accepted');
     banner.classList.remove('visible');
-    loadHotjar();
+    loadTrackers();
 });
 document.getElementById('cookie-decline').addEventListener('click', () => {
     localStorage.setItem('tvd-consent', 'declined');
@@ -1128,7 +1133,7 @@ document.getElementById('cookie-decline').addEventListener('click', () => {
 <!-- ── COOKIE BANNER ── -->
 <div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent">
     <p class="cookie-text">
-        This site uses <strong style="color:var(--white)">Hotjar</strong> to analyse how visitors use the site (heatmaps &amp; session recordings). No personal data is sold or shared. You can read more in our <a href="privacy-policy.html">Privacy Policy</a>.
+        This site uses <strong style="color:var(--white)">Hotjar</strong> and <strong style="color:var(--white)">ContentSquare</strong> to analyse how visitors use the site (heatmaps &amp; session recordings). No personal data is sold or shared. You can read more in our <a href="privacy-policy.html">Privacy Policy</a>.
     </p>
     <div class="cookie-actions">
         <button id="cookie-decline" class="cookie-decline">Decline</button>
