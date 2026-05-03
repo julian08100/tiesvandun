@@ -3,9 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ties van Dun</title>
+    <title>Ties van Dun — DJ &amp; Producer</title>
+
+    <meta name="description" content="Ties van Dun is a Dutch DJ and producer dedicated to peak-time techno. Performed at Amsterdam Dance Event 2023, won the Klaudia Gawlas competition. Available for bookings worldwide.">
+    <meta name="theme-color" content="#080808">
+    <link rel="canonical" href="https://tiesvandun.nl">
+
+    <meta property="og:title" content="Ties van Dun — DJ &amp; Producer">
+    <meta property="og:description" content="Peak-time techno DJ from the Netherlands. ADE 2023 showcase · Klaudia Gawlas competition winner. Book for your event.">
+    <meta property="og:image" content="https://tiesvandun.nl/wp-content/uploads/2026/01/image00001-683x1024.jpeg">
+    <meta property="og:url" content="https://tiesvandun.nl">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Ties van Dun">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ties van Dun — DJ &amp; Producer">
+    <meta name="twitter:description" content="Peak-time techno from the Netherlands. Available for bookings.">
+    <meta name="twitter:image" content="https://tiesvandun.nl/wp-content/uploads/2026/01/image00001-683x1024.jpeg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -37,7 +54,7 @@
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: width .25s, height .25s, opacity .25s;
+            transition: width .25s, height .25s;
         }
         #cur-ring {
             position: fixed;
@@ -47,6 +64,7 @@
             pointer-events: none;
             z-index: 9998;
             transform: translate(-50%, -50%);
+            transition: width .35s, height .35s;
         }
 
         /* ── GRAIN ── */
@@ -118,8 +136,11 @@
             background: var(--red);
             transition: width .35s ease;
         }
-        .nav-links a:hover { color: var(--white); }
-        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover,
+        .nav-links a.active { color: var(--white); }
+        .nav-links a:hover::after,
+        .nav-links a.active::after { width: 100%; }
+
         .nav-email {
             font-family: 'DM Mono', monospace;
             font-size: 11px;
@@ -130,6 +151,73 @@
         }
         .nav-email:hover { color: var(--white); }
 
+        /* Hamburger */
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: none;
+            background: none;
+            border: none;
+            padding: 4px;
+            z-index: 600;
+            position: relative;
+        }
+        .nav-hamburger span {
+            display: block;
+            width: 22px;
+            height: 1.5px;
+            background: var(--white);
+            transition: transform .3s cubic-bezier(.25,.46,.45,.94), opacity .3s;
+        }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+        /* Mobile nav overlay */
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8,8,8,.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 450;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(100%);
+            transition: transform .55s cubic-bezier(.77,0,.175,1);
+        }
+        .nav-overlay.open { transform: translateX(0); }
+        .nav-overlay-links {
+            list-style: none;
+            text-align: center;
+        }
+        .nav-overlay-links a {
+            display: block;
+            font-size: clamp(32px, 9vw, 56px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            color: var(--muted);
+            text-decoration: none;
+            padding: 10px 0;
+            transition: color .3s;
+            text-transform: uppercase;
+        }
+        .nav-overlay-links a:hover { color: var(--white); }
+        .nav-overlay-email {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            letter-spacing: .12em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-top: 40px;
+            text-decoration: none;
+            transition: color .3s;
+        }
+        .nav-overlay-email:hover { color: var(--white); }
+
         /* ── HERO ── */
         #hero {
             height: 100svh;
@@ -139,7 +227,6 @@
             grid-template-columns: 1fr 1fr;
         }
 
-        /* AIDA photo — left half */
         .hero-photo {
             position: relative;
             overflow: hidden;
@@ -152,18 +239,21 @@
             display: block;
             filter: grayscale(15%) brightness(.88);
             transition: filter 8s ease;
+            animation: photoReveal 1.5s cubic-bezier(.16,1,.3,1) both;
+        }
+        @keyframes photoReveal {
+            from { transform: scale(1.07); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
         }
         #hero:hover .hero-photo img {
             filter: grayscale(0%) brightness(.95);
         }
-        /* fade right edge into black */
         .hero-photo::after {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(to right, transparent 55%, var(--black) 100%);
         }
-        /* subtle bottom fade */
         .hero-photo::before {
             content: '';
             position: absolute;
@@ -172,7 +262,6 @@
             z-index: 1;
         }
 
-        /* model credit — bottom left over the photo */
         .model-credit {
             position: absolute;
             bottom: 36px;
@@ -187,7 +276,6 @@
             transform: rotate(180deg);
         }
 
-        /* right half — text */
         .hero-content {
             display: flex;
             flex-direction: column;
@@ -197,7 +285,6 @@
             z-index: 1;
         }
 
-        /* animated grid behind text */
         .hero-content::before {
             content: '';
             position: absolute;
@@ -214,6 +301,17 @@
             to   { background-position: 0 64px, 64px 0; }
         }
 
+        /* Hero staggered entrance */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: none; }
+        }
+        .eyebrow       { animation: fadeSlideUp .8s cubic-bezier(.16,1,.3,1) .35s both; }
+        .hero-title    { animation: fadeSlideUp 1s  cubic-bezier(.16,1,.3,1) .55s both; }
+        .hero-sub      { animation: fadeSlideUp .8s cubic-bezier(.16,1,.3,1) .75s both; }
+        .hero-actions  { animation: fadeSlideUp .8s cubic-bezier(.16,1,.3,1) .90s both; }
+        .scroll-hint   { animation: fadeSlideUp .8s cubic-bezier(.16,1,.3,1) 1.1s both; }
+
         .eyebrow {
             font-family: 'DM Mono', monospace;
             font-size: 10px;
@@ -224,7 +322,6 @@
             position: relative;
         }
 
-        /* ── HERO TITLE ── */
         .hero-title {
             position: relative;
             line-height: .9;
@@ -244,7 +341,6 @@
             margin-top: 8px;
         }
 
-        /* glitch on TIES only */
         .glitch { position: relative; display: inline-block; user-select: none; }
         .glitch::before,
         .glitch::after {
@@ -320,7 +416,6 @@
         .btn-ghost:hover { background: transparent; color: var(--white); border-color: transparent; }
         .btn-ghost:hover::after { transform: translateX(6px); }
 
-        /* scroll hint */
         .scroll-hint {
             position: absolute;
             bottom: 52px; right: 0;
@@ -337,11 +432,12 @@
         .scroll-line {
             width: 1px; height: 52px;
             background: linear-gradient(to bottom, var(--muted), transparent);
+            transform-origin: top;
             animation: scrollpulse 2.2s ease-in-out infinite;
         }
         @keyframes scrollpulse {
-            0%,100% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-            50%      { transform: scaleY(0); transform-origin: top; opacity: 0; }
+            0%,100% { transform: scaleY(1); opacity: 1; }
+            50%      { transform: scaleY(0); opacity: 0; }
         }
 
         /* ── SHARED ── */
@@ -393,7 +489,6 @@
 
         .about-right { display: flex; flex-direction: column; gap: 2px; }
 
-        /* second AIDA photo in about */
         .about-photo {
             width: 100%;
             aspect-ratio: 3/4;
@@ -445,7 +540,7 @@
 
         .gallery-head {
             padding: 0 52px;
-            margin-bottom: 52px;
+            margin-bottom: 40px;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
@@ -462,6 +557,22 @@
             letter-spacing: .2em;
             color: var(--muted);
             text-transform: uppercase;
+        }
+
+        /* Horizontal scroll progress */
+        .gallery-progress-wrap {
+            height: 1px;
+            background: var(--grey);
+            margin: 0 52px 24px;
+            overflow: hidden;
+            position: relative;
+        }
+        .gallery-progress {
+            position: absolute;
+            inset: 0;
+            background: var(--red);
+            transform-origin: left;
+            transform: scaleX(0);
         }
 
         .gscroll {
@@ -536,8 +647,8 @@
         }
         .gitem:hover::after { border-width: 26px 26px 0 0; }
 
-        /* ── MIXTAPES ── */
-        #mixtapes { padding: 140px 52px; }
+        /* ── MUSIC (tracks + mixtapes) ── */
+        #music { padding: 140px 52px; }
 
         .section-head {
             display: flex;
@@ -550,6 +661,43 @@
             font-weight: 700;
             letter-spacing: -.03em;
             margin-top: 4px;
+        }
+
+        /* SoundCloud featured player */
+        .mix-feature {
+            background: var(--grey);
+            padding: 28px;
+            margin-bottom: 44px;
+            border-left: 2px solid var(--red);
+        }
+        .mix-feature-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .28em;
+            color: var(--red);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mix-feature-label::before {
+            content: '';
+            display: inline-block;
+            width: 6px; height: 6px;
+            background: var(--red);
+            border-radius: 50%;
+            animation: pulse-dot 1.8s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pulse-dot {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: .35; transform: scale(.65); }
+        }
+        .mix-feature iframe {
+            display: block;
+            width: 100%;
+            border: none;
         }
 
         .mix-list { list-style: none; }
@@ -596,12 +744,77 @@
             font-size: 11px;
             color: var(--muted);
             transition: border-color .3s, background .3s, color .3s;
+            text-decoration: none;
             flex-shrink: 0;
         }
         .mix-item:hover .mix-btn {
             border-color: var(--red);
             background: var(--red);
             color: var(--white);
+        }
+
+        /* ── BOOKING ── */
+        #booking {
+            position: relative;
+            padding: 160px 52px;
+            text-align: center;
+            overflow: hidden;
+            background: var(--grey);
+        }
+        .booking-bg-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(100px, 20vw, 320px);
+            font-weight: 700;
+            letter-spacing: -.06em;
+            color: rgba(8,8,8,.75);
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            line-height: 1;
+        }
+        .booking-inner {
+            position: relative;
+            z-index: 1;
+        }
+        .booking-inner .section-label {
+            justify-content: center;
+        }
+        .booking-inner .section-label::before { display: none; }
+        .booking-title {
+            font-size: clamp(40px, 7vw, 96px);
+            font-weight: 700;
+            letter-spacing: -.04em;
+            line-height: 1;
+            margin-bottom: 32px;
+            margin-top: 4px;
+        }
+        .booking-title em {
+            font-style: normal;
+            color: var(--red);
+        }
+        .booking-sub {
+            font-size: 15px;
+            font-weight: 300;
+            color: var(--muted);
+            max-width: 520px;
+            margin: 0 auto 48px;
+            line-height: 1.85;
+        }
+        .booking-actions {
+            display: flex;
+            justify-content: center;
+        }
+        .booking-contact {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-top: 28px;
+            font-style: normal;
         }
 
         /* ── FOOTER ── */
@@ -716,10 +929,7 @@
             padding: 11px 26px;
             transition: background .3s, color .3s, border-color .3s;
         }
-        .cookie-accept {
-            background: var(--white);
-            color: var(--black);
-        }
+        .cookie-accept { background: var(--white); color: var(--black); }
         .cookie-accept:hover { background: var(--red); color: var(--white); }
         .cookie-decline {
             background: transparent;
@@ -727,9 +937,6 @@
             border: 1px solid var(--mid);
         }
         .cookie-decline:hover { color: var(--white); border-color: var(--muted); }
-        @media (max-width: 768px) {
-            #cookie-banner { flex-direction: column; align-items: flex-start; padding: 20px 24px; }
-        }
 
         /* ── REVEAL ── */
         .rev {
@@ -745,8 +952,8 @@
         /* ── MOBILE ── */
         @media (max-width: 768px) {
             nav { padding: 20px 24px; }
-            .nav-email { display: none; }
-            .nav-links { gap: 20px; }
+            .nav-email, .nav-links { display: none; }
+            .nav-hamburger { display: flex; }
 
             #hero {
                 grid-template-columns: 1fr;
@@ -764,16 +971,23 @@
 
             #gallery { padding: 80px 0; }
             .gallery-head { padding: 0 24px; flex-direction: column; align-items: flex-start; gap: 4px; }
+            .gallery-progress-wrap { margin: 0 24px 20px; }
             .gscroll { padding: 0 24px 16px; }
             .gitem:nth-child(odd)  { width: 240px; height: 360px; }
             .gitem:nth-child(even) { width: 360px; height: 240px; }
 
-            #mixtapes { padding: 80px 24px; }
+            #music { padding: 80px 24px; }
             .mix-item { grid-template-columns: 36px 1fr auto; }
             .mix-btn { display: none; }
+            .mix-feature { padding: 20px; }
+
+            #booking { padding: 100px 24px; }
+            .booking-bg-text { font-size: clamp(80px, 28vw, 180px); }
 
             footer { grid-template-columns: 1fr; padding: 48px 24px 40px; }
             .footer-right { text-align: left; }
+
+            #cookie-banner { flex-direction: column; align-items: flex-start; padding: 20px 24px; }
         }
     </style>
 </head>
@@ -782,32 +996,46 @@
 <div id="cur"></div>
 <div id="cur-ring"></div>
 
+<!-- Mobile nav overlay -->
+<div class="nav-overlay" id="nav-overlay" aria-hidden="true">
+    <ul class="nav-overlay-links">
+        <li><a href="#about"   class="nav-overlay-link">About</a></li>
+        <li><a href="#gallery" class="nav-overlay-link">Gallery</a></li>
+        <li><a href="#music"   class="nav-overlay-link">Music</a></li>
+        <li><a href="#booking" class="nav-overlay-link">Book</a></li>
+    </ul>
+    <a href="mailto:management@tiesvandun.nl" class="nav-overlay-email">management@tiesvandun.nl</a>
+</div>
+
 <!-- ── NAV ── -->
 <nav id="nav">
     <a href="#" class="nav-logo">Ties van Dun</a>
     <ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#mixtapes">Mixtapes</a></li>
-        <li><a href="#mixtapes">Tracks</a></li>
+        <li><a href="#music">Music</a></li>
+        <li><a href="#booking">Book</a></li>
     </ul>
     <a href="mailto:management@tiesvandun.nl" class="nav-email">management@tiesvandun.nl</a>
+    <button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 </nav>
 
 <!-- ── HERO ── -->
 <section id="hero">
 
-    <!-- AIDA photo — visual hook -->
     <div class="hero-photo">
         <img
             src="https://tiesvandun.nl/wp-content/uploads/2026/01/image00001-683x1024.jpeg"
-            alt="AIDA"
+            alt="Ties van Dun performing"
             loading="eager"
         >
-        <span class="model-credit">Model: AIDA</span>
+        <span class="model-credit">Photo: AIDA</span>
     </div>
 
-    <!-- artist content -->
     <div class="hero-content">
         <p class="eyebrow">DJ &middot; Producer &middot; Peak-time Techno</p>
 
@@ -820,7 +1048,7 @@
 
         <div class="hero-actions">
             <a href="#about" class="btn">Discover</a>
-            <a href="#mixtapes" class="btn btn-ghost">Listen now</a>
+            <a href="#music" class="btn btn-ghost">Listen now</a>
         </div>
 
         <div class="scroll-hint">
@@ -844,16 +1072,14 @@
     </div>
 
     <div class="about-right rev rev-d1">
-        <!-- second AIDA photo -->
         <div class="about-photo">
             <img
                 src="https://tiesvandun.nl/wp-content/uploads/2026/01/image00010-768x1024.jpeg"
-                alt="AIDA"
+                alt="Ties van Dun backstage"
                 loading="lazy"
             >
         </div>
 
-        <!-- stats -->
         <div class="stats">
             <div class="stat">
                 <div class="stat-n">20</div>
@@ -887,6 +1113,10 @@
         <span class="gallery-count">05 images</span>
     </div>
 
+    <div class="gallery-progress-wrap">
+        <div id="gallery-progress" class="gallery-progress"></div>
+    </div>
+
     <div class="gscroll" id="gscroll">
         <div class="gtrack">
             <div class="gitem">
@@ -915,111 +1145,147 @@
 
 <hr class="divider">
 
-<!-- ── TRACKS + MIXTAPES ── -->
-<section id="mixtapes">
-    <div class="section-head rev">
-        <div>
-            <p class="section-label">Tracks</p>
-            <h2>Original releases.</h2>
+<!-- ── MUSIC: TRACKS + MIXTAPES ── -->
+<section id="music">
+
+    <!-- Tracks -->
+    <div id="tracks">
+        <div class="section-head rev">
+            <div>
+                <p class="section-label">Tracks</p>
+                <h2>Original releases.</h2>
+            </div>
+            <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" class="btn btn-ghost" target="_blank" rel="noopener">Spotify</a>
         </div>
-        <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" class="btn btn-ghost" target="_blank">Spotify</a>
+
+        <ul class="mix-list">
+            <li class="mix-item rev">
+                <span class="mix-n">01</span>
+                <div>
+                    <div class="mix-title">Into My Brain</div>
+                    <div class="mix-meta">Original Mix &middot; Renesanz Records &middot; 2024</div>
+                </div>
+                <span class="mix-dur">Into My Brain EP</span>
+                <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" rel="noopener" class="mix-btn">&#8599;</a>
+            </li>
+            <li class="mix-item rev rev-d1">
+                <span class="mix-n">02</span>
+                <div>
+                    <div class="mix-title">One With The Universe</div>
+                    <div class="mix-meta">Original Mix &middot; Renesanz Records &middot; 2024</div>
+                </div>
+                <span class="mix-dur">Into My Brain EP</span>
+                <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" rel="noopener" class="mix-btn">&#8599;</a>
+            </li>
+            <li class="mix-item rev rev-d2">
+                <span class="mix-n">03</span>
+                <div>
+                    <div class="mix-title">Techno Rampage, Vol. 19</div>
+                    <div class="mix-meta">Compilation Appearance &middot; 2024</div>
+                </div>
+                <span class="mix-dur">Compilation</span>
+                <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" rel="noopener" class="mix-btn">&#8599;</a>
+            </li>
+            <li class="mix-item rev rev-d3">
+                <span class="mix-n">04</span>
+                <div>
+                    <div class="mix-title">High Energy Hits 017</div>
+                    <div class="mix-meta">Compilation Appearance &middot; 2024</div>
+                </div>
+                <span class="mix-dur">Compilation</span>
+                <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" rel="noopener" class="mix-btn">&#8599;</a>
+            </li>
+        </ul>
     </div>
 
-    <ul class="mix-list">
-        <li class="mix-item rev">
-            <span class="mix-n">01</span>
+    <!-- Mixtapes -->
+    <div id="mixtapes" style="margin-top: 80px;">
+        <div class="section-head rev">
             <div>
-                <div class="mix-title">Into My Brain</div>
-                <div class="mix-meta">Original Mix &middot; Renesanz Records &middot; 2024</div>
+                <p class="section-label">Mixtapes</p>
+                <h2>DJ mixes.</h2>
             </div>
-            <span class="mix-dur">Into My Brain EP</span>
-            <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" class="mix-btn">&#8599;</a>
-        </li>
-        <li class="mix-item rev rev-d1">
-            <span class="mix-n">02</span>
-            <div>
-                <div class="mix-title">One With The Universe</div>
-                <div class="mix-meta">Original Mix &middot; Renesanz Records &middot; 2024</div>
-            </div>
-            <span class="mix-dur">Into My Brain EP</span>
-            <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" class="mix-btn">&#8599;</a>
-        </li>
-        <li class="mix-item rev rev-d2">
-            <span class="mix-n">03</span>
-            <div>
-                <div class="mix-title">Techno Rampage, Vol. 19</div>
-                <div class="mix-meta">Compilation Appearance &middot; 2024</div>
-            </div>
-            <span class="mix-dur">Compilation</span>
-            <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" class="mix-btn">&#8599;</a>
-        </li>
-        <li class="mix-item rev rev-d3">
-            <span class="mix-n">04</span>
-            <div>
-                <div class="mix-title">High Energy Hits 017</div>
-                <div class="mix-meta">Compilation Appearance &middot; 2024</div>
-            </div>
-            <span class="mix-dur">Compilation</span>
-            <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" class="mix-btn">&#8599;</a>
-        </li>
-    </ul>
-
-    <!-- Mixtapes subsection -->
-    <div class="section-head rev" style="margin-top: 80px;">
-        <div>
-            <p class="section-label">Mixtapes</p>
-            <h2>DJ mixes.</h2>
+            <a href="https://soundcloud.com/user-256178592" class="btn btn-ghost" target="_blank" rel="noopener">SoundCloud</a>
         </div>
-        <a href="https://soundcloud.com/user-256178592" class="btn btn-ghost" target="_blank">SoundCloud</a>
+
+        <!-- Featured mix embed -->
+        <div class="mix-feature rev">
+            <p class="mix-feature-label">Latest Mix — Techno Mixtape 010</p>
+            <iframe
+                width="100%"
+                height="166"
+                scrolling="no"
+                frameborder="no"
+                allow="autoplay"
+                loading="lazy"
+                src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-256178592/techno-mixtape-010-hard-techno&color=%23ff1e1e&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"
+                title="Techno Mixtape 010 — Ties van Dun">
+            </iframe>
+        </div>
+
+        <ul class="mix-list">
+            <li class="mix-item rev">
+                <span class="mix-n">010</span>
+                <div>
+                    <div class="mix-title">Techno Mixtape 010</div>
+                    <div class="mix-meta">Hard Techno &middot; Festival Season Kick Off</div>
+                </div>
+                <span class="mix-dur">SoundCloud</span>
+                <a href="https://soundcloud.com/user-256178592/techno-mixtape-010-hard-techno" target="_blank" rel="noopener" class="mix-btn">&#9654;</a>
+            </li>
+            <li class="mix-item rev rev-d1">
+                <span class="mix-n">009</span>
+                <div>
+                    <div class="mix-title">Techno Mixtape 09</div>
+                    <div class="mix-meta">Deep &amp; Dark Techno</div>
+                </div>
+                <span class="mix-dur">SoundCloud</span>
+                <a href="https://soundcloud.com/user-256178592/techno-mixtape-09-deep-dark" target="_blank" rel="noopener" class="mix-btn">&#9654;</a>
+            </li>
+            <li class="mix-item rev rev-d2">
+                <span class="mix-n">004</span>
+                <div>
+                    <div class="mix-title">Techno Mixtape 04</div>
+                    <div class="mix-meta">Peak-time Techno</div>
+                </div>
+                <span class="mix-dur">SoundCloud</span>
+                <a href="https://soundcloud.com/user-256178592/techno-mixtape-04-ties-van-dun" target="_blank" rel="noopener" class="mix-btn">&#9654;</a>
+            </li>
+            <li class="mix-item rev rev-d3">
+                <span class="mix-n">003</span>
+                <div>
+                    <div class="mix-title">Techno Mixtape 03</div>
+                    <div class="mix-meta">Psytechno &amp; Hard Techno</div>
+                </div>
+                <span class="mix-dur">SoundCloud</span>
+                <a href="https://soundcloud.com/user-256178592/techno-mixtape-psytechno" target="_blank" rel="noopener" class="mix-btn">&#9654;</a>
+            </li>
+            <li class="mix-item rev rev-d3">
+                <span class="mix-n">002</span>
+                <div>
+                    <div class="mix-title">Techno Mixtape 02</div>
+                    <div class="mix-meta">Hard Techno</div>
+                </div>
+                <span class="mix-dur">SoundCloud</span>
+                <a href="https://soundcloud.com/user-256178592/techno-mixtape-hard-techno-02" target="_blank" rel="noopener" class="mix-btn">&#9654;</a>
+            </li>
+        </ul>
     </div>
 
-    <ul class="mix-list">
-        <li class="mix-item rev">
-            <span class="mix-n">010</span>
-            <div>
-                <div class="mix-title">Techno Mixtape 010</div>
-                <div class="mix-meta">Hard Techno &middot; Festival Season Kick Off</div>
-            </div>
-            <span class="mix-dur">SoundCloud</span>
-            <a href="https://soundcloud.com/user-256178592/techno-mixtape-010-hard-techno" target="_blank" class="mix-btn">&#9654;</a>
-        </li>
-        <li class="mix-item rev rev-d1">
-            <span class="mix-n">009</span>
-            <div>
-                <div class="mix-title">Techno Mixtape 09</div>
-                <div class="mix-meta">Deep &amp; Dark Techno</div>
-            </div>
-            <span class="mix-dur">SoundCloud</span>
-            <a href="https://soundcloud.com/user-256178592/techno-mixtape-09-deep-dark" target="_blank" class="mix-btn">&#9654;</a>
-        </li>
-        <li class="mix-item rev rev-d2">
-            <span class="mix-n">004</span>
-            <div>
-                <div class="mix-title">Techno Mixtape 04</div>
-                <div class="mix-meta">Peak-time Techno</div>
-            </div>
-            <span class="mix-dur">SoundCloud</span>
-            <a href="https://soundcloud.com/user-256178592/techno-mixtape-04-ties-van-dun" target="_blank" class="mix-btn">&#9654;</a>
-        </li>
-        <li class="mix-item rev rev-d3">
-            <span class="mix-n">003</span>
-            <div>
-                <div class="mix-title">Techno Mixtape 03</div>
-                <div class="mix-meta">Psytechno &amp; Hard Techno</div>
-            </div>
-            <span class="mix-dur">SoundCloud</span>
-            <a href="https://soundcloud.com/user-256178592/techno-mixtape-psytechno" target="_blank" class="mix-btn">&#9654;</a>
-        </li>
-        <li class="mix-item rev rev-d3">
-            <span class="mix-n">002</span>
-            <div>
-                <div class="mix-title">Techno Mixtape 02</div>
-                <div class="mix-meta">Hard Techno</div>
-            </div>
-            <span class="mix-dur">SoundCloud</span>
-            <a href="https://soundcloud.com/user-256178592/techno-mixtape-hard-techno-02" target="_blank" class="mix-btn">&#9654;</a>
-        </li>
-    </ul>
+</section>
+
+<!-- ── BOOKING ── -->
+<section id="booking">
+    <div class="booking-bg-text" aria-hidden="true">BOOK</div>
+    <div class="booking-inner rev">
+        <p class="section-label">Bookings</p>
+        <h2 class="booking-title">Let's make<br><em>some noise.</em></h2>
+        <p class="booking-sub">Available for clubs, festivals, and private events across Europe and beyond. Reach out to management for availability, rates, and rider.</p>
+        <div class="booking-actions">
+            <a href="mailto:management@tiesvandun.nl" class="btn">Send a booking inquiry</a>
+        </div>
+        <address class="booking-contact">management@tiesvandun.nl</address>
+    </div>
 </section>
 
 <!-- ── FOOTER ── -->
@@ -1027,22 +1293,33 @@
     <div class="footer-name">Ties<br>van Dun</div>
 
     <div class="footer-socials">
-        <a href="https://youtube.com/@tiesvandun"    class="social" target="_blank">YouTube</a>
-        <a href="https://instagram.com/tiesvandun"   class="social" target="_blank">Instagram</a>
-        <a href="https://soundcloud.com/tiesvandun"  class="social" target="_blank">SoundCloud</a>
-        <a href="https://spotify.com"                class="social" target="_blank">Spotify</a>
+        <a href="https://youtube.com/@tiesvandun"                            class="social" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/tiesvandun"                           class="social" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://soundcloud.com/user-256178592"                      class="social" target="_blank" rel="noopener">SoundCloud</a>
+        <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt"    class="social" target="_blank" rel="noopener">Spotify</a>
     </div>
 
     <div class="footer-right">
         <a href="mailto:management@tiesvandun.nl" class="footer-email">management@tiesvandun.nl</a>
-        <p class="footer-copy">&copy; 2025 Ties van Dun. All rights reserved.</p>
-        <p class="footer-credit">Designed by <a href="https://linkedin.com/in/juliandehaas" target="_blank">Julian de Haas</a> &middot; <a href="privacy-policy.html">Privacy Policy</a></p>
+        <p class="footer-copy">&copy; 2026 Ties van Dun. All rights reserved.</p>
+        <p class="footer-credit">Designed by <a href="https://linkedin.com/in/juliandehaas" target="_blank" rel="noopener">Julian de Haas</a> &middot; <a href="privacy-policy.html">Privacy Policy</a></p>
     </div>
 </footer>
 
+<!-- Cookie banner must be in DOM before the script below -->
+<div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent">
+    <p class="cookie-text">
+        This site uses <strong style="color:var(--white)">ContentSquare</strong> to analyse how visitors use the site (heatmaps &amp; session recordings). No personal data is sold or shared. Read more in our <a href="privacy-policy.html">Privacy Policy</a>.
+    </p>
+    <div class="cookie-actions">
+        <button id="cookie-decline" class="cookie-decline">Decline</button>
+        <button id="cookie-accept"  class="cookie-accept">Accept</button>
+    </div>
+</div>
+
 <script>
 // ── CURSOR
-const cur = document.getElementById('cur');
+const cur  = document.getElementById('cur');
 const ring = document.getElementById('cur-ring');
 let mx = 0, my = 0, rx = 0, ry = 0;
 
@@ -1058,7 +1335,7 @@ document.addEventListener('mousemove', e => {
     ring.style.top  = ry + 'px';
     requestAnimationFrame(tick);
 })();
-document.querySelectorAll('a, .mix-item, .gitem, .stat, .about-photo').forEach(el => {
+document.querySelectorAll('a, button, .mix-item, .gitem, .stat, .about-photo').forEach(el => {
     el.addEventListener('mouseenter', () => {
         cur.style.width = cur.style.height = '18px';
         ring.style.width = ring.style.height = '56px';
@@ -1069,16 +1346,32 @@ document.querySelectorAll('a, .mix-item, .gitem, .stat, .about-photo').forEach(e
     });
 });
 
-// ── NAV
+// ── NAV SCROLL
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 60);
 }, { passive: true });
 
+// ── ACTIVE NAV (IntersectionObserver)
+const navLinks = document.querySelectorAll('.nav-links a');
+const sections = document.querySelectorAll('section[id]');
+
+const navObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.id;
+            navLinks.forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+            });
+        }
+    });
+}, { threshold: .35 });
+sections.forEach(s => navObserver.observe(s));
+
 // ── REVEAL
 const io = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-}, { threshold: .1 });
+}, { threshold: .08 });
 document.querySelectorAll('.rev').forEach(el => io.observe(el));
 
 // ── DRAG GALLERY
@@ -1092,24 +1385,44 @@ gs.addEventListener('mousemove', e => {
     e.preventDefault();
     gs.scrollLeft = sl - (e.pageX - gs.offsetLeft - sx) * 1.6;
 });
-// ── TRACKERS — load only after consent
+
+// ── GALLERY PROGRESS BAR
+const progressBar = document.getElementById('gallery-progress');
+gs.addEventListener('scroll', () => {
+    const pct = gs.scrollLeft / (gs.scrollWidth - gs.clientWidth);
+    progressBar.style.transform = 'scaleX(' + pct + ')';
+}, { passive: true });
+
+// ── HAMBURGER MENU
+const hamburger = document.getElementById('hamburger');
+const overlay   = document.getElementById('nav-overlay');
+const overlayLinks = document.querySelectorAll('.nav-overlay-link');
+
+hamburger.addEventListener('click', () => {
+    const isOpen = hamburger.classList.toggle('open');
+    overlay.classList.toggle('open', isOpen);
+    hamburger.setAttribute('aria-expanded', isOpen);
+    overlay.setAttribute('aria-hidden', !isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+overlayLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        overlay.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    });
+});
+
+// ── COOKIE CONSENT
 function loadTrackers() {
-    // Hotjar
-    (function(h,o,t,j,a,r){
-        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-        h._hjSettings={hjid:YOUR_HOTJAR_SITE_ID,hjsv:6}; // ← replace YOUR_HOTJAR_SITE_ID
-        a=o.getElementsByTagName('head')[0];
-        r=o.createElement('script');r.async=1;
-        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-        a.appendChild(r);
-    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-    // ContentSquare
-    var cs=document.createElement('script');cs.async=1;
-    cs.src='https://t.contentsquare.net/uxa/8c97f5ee65968.js';
+    var cs = document.createElement('script');
+    cs.async = 1;
+    cs.src = 'https://t.contentsquare.net/uxa/8c97f5ee65968.js';
     document.head.appendChild(cs);
 }
 
-// ── COOKIE CONSENT
 const banner  = document.getElementById('cookie-banner');
 const consent = localStorage.getItem('tvd-consent');
 
@@ -1129,17 +1442,6 @@ document.getElementById('cookie-decline').addEventListener('click', () => {
     banner.classList.remove('visible');
 });
 </script>
-
-<!-- ── COOKIE BANNER ── -->
-<div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent">
-    <p class="cookie-text">
-        This site uses <strong style="color:var(--white)">Hotjar</strong> and <strong style="color:var(--white)">ContentSquare</strong> to analyse how visitors use the site (heatmaps &amp; session recordings). No personal data is sold or shared. You can read more in our <a href="privacy-policy.html">Privacy Policy</a>.
-    </p>
-    <div class="cookie-actions">
-        <button id="cookie-decline" class="cookie-decline">Decline</button>
-        <button id="cookie-accept"  class="cookie-accept">Accept</button>
-    </div>
-</div>
 
 </body>
 </html>
