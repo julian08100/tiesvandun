@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — Ties van Dun</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black: #080808;
+            --white: #f0ece6;
+            --red: #ff1e1e;
+            --grey: #161616;
+            --mid: #2a2a2a;
+            --muted: #666;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 52px;
+            background: rgba(8,8,8,.9);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+        .nav-logo {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .32em;
+            text-decoration: none;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+        .nav-links {
+            display: flex;
+            gap: 44px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            transition: color .3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 1px;
+            background: var(--red);
+            transition: width .35s ease;
+        }
+        .nav-links a:hover { color: var(--white); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-email {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: .05em;
+            transition: color .3s;
+        }
+        .nav-email:hover { color: var(--white); }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            padding: 160px 52px 80px;
+            border-bottom: 1px solid var(--grey);
+        }
+        .page-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .35em;
+            color: var(--red);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .page-label::before {
+            content: '';
+            width: 20px; height: 1px;
+            background: var(--red);
+        }
+        .page-header h1 {
+            font-size: clamp(40px, 6vw, 88px);
+            font-weight: 700;
+            letter-spacing: -.04em;
+            line-height: .95;
+            margin-bottom: 24px;
+        }
+        .page-header .meta {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: .1em;
+        }
+
+        /* ── CONTENT ── */
+        .policy-body {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 80px 52px 120px;
+        }
+
+        .policy-section {
+            margin-bottom: 64px;
+        }
+
+        .policy-section h2 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -.02em;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .policy-section h3 {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .2em;
+            color: var(--red);
+            text-transform: uppercase;
+            margin: 28px 0 10px;
+        }
+
+        .policy-section p {
+            font-size: 15px;
+            line-height: 1.85;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        .policy-section p strong {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .policy-section a {
+            color: var(--white);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color .3s;
+        }
+        .policy-section a:hover { color: var(--red); }
+
+        .policy-section ul {
+            list-style: none;
+            margin: 8px 0 14px;
+        }
+        .policy-section ul li {
+            font-size: 15px;
+            line-height: 1.85;
+            color: var(--muted);
+            padding: 6px 0;
+            border-bottom: 1px solid var(--grey);
+            display: flex;
+            gap: 16px;
+            align-items: baseline;
+        }
+        .policy-section ul li::before {
+            content: '—';
+            color: var(--red);
+            flex-shrink: 0;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+        }
+        .policy-section ul li strong { color: var(--white); font-weight: 500; }
+
+        .cookie-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+        .cookie-table th {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--mid);
+        }
+        .cookie-table td {
+            padding: 12px;
+            color: var(--muted);
+            border-bottom: 1px solid var(--grey);
+            line-height: 1.55;
+        }
+        .cookie-table td:first-child {
+            font-family: 'DM Mono', monospace;
+            color: var(--white);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .callout {
+            background: var(--grey);
+            border-left: 3px solid var(--red);
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--muted);
+        }
+        .callout strong { color: var(--white); }
+        .callout a { color: var(--white); }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--grey);
+            padding: 40px 52px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .footer-copy {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+        .footer-links a {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            transition: color .3s;
+        }
+        .footer-links a:hover { color: var(--white); }
+
+        @media (max-width: 768px) {
+            nav { padding: 20px 24px; }
+            .nav-email { display: none; }
+            .nav-links { gap: 20px; }
+            .page-header { padding: 120px 24px 60px; }
+            .policy-body { padding: 48px 24px 80px; }
+            footer { padding: 32px 24px; }
+            .cookie-table { font-size: 12px; }
+            .cookie-table td, .cookie-table th { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">Ties van Dun</a>
+    <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#gallery">Gallery</a></li>
+        <li><a href="index.html#mixtapes">Mixtapes</a></li>
+        <li><a href="index.html#mixtapes">Tracks</a></li>
+    </ul>
+    <a href="mailto:management@tiesvandun.nl" class="nav-email">management@tiesvandun.nl</a>
+</nav>
+
+<div class="page-header">
+    <p class="page-label">Legal</p>
+    <h1>Privacy<br>Policy</h1>
+    <p class="meta">Last updated: May 2025 &nbsp;&middot;&nbsp; tiesvandun.nl</p>
+</div>
+
+<div class="policy-body">
+
+    <div class="policy-section">
+        <h2>1. Who we are</h2>
+        <p>This website is operated by <strong>Ties van Dun</strong>, a DJ and music producer based in the Netherlands.</p>
+        <ul>
+            <li><strong>Website:</strong> tiesvandun.nl</li>
+            <li><strong>Contact:</strong> <a href="mailto:management@tiesvandun.nl">management@tiesvandun.nl</a></li>
+        </ul>
+        <p>Ties van Dun is the <strong>data controller</strong> for personal data collected through this website, within the meaning of the General Data Protection Regulation (GDPR, Regulation (EU) 2016/679).</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>2. What data we collect and why</h2>
+        <p>This website does not collect personal data through forms, accounts, or direct input. The only data collected is through <strong>Hotjar</strong>, an analytics tool we use to understand how visitors interact with the site.</p>
+
+        <h3>Analytics (Hotjar)</h3>
+        <p>With your consent, Hotjar collects the following data:</p>
+        <ul>
+            <li><strong>Behavioural data</strong> — mouse movements, clicks, scrolling, and time spent on pages (used for heatmaps)</li>
+            <li><strong>Session recordings</strong> — anonymised recordings of user sessions to understand navigation patterns</li>
+            <li><strong>Device &amp; browser info</strong> — screen size, browser type, operating system</li>
+            <li><strong>IP address</strong> — automatically anonymised by Hotjar before storage; never stored in full</li>
+            <li><strong>Pages visited</strong> — which pages are viewed and in what order</li>
+        </ul>
+        <p><strong>Purpose:</strong> to improve the design and usability of this website.</p>
+        <p><strong>Legal basis:</strong> Article 6(1)(a) GDPR — your consent, given via the cookie banner on this site. You can withdraw your consent at any time by clearing your browser's local storage or contacting us.</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>3. Cookies</h2>
+        <p>Cookies are only placed after you click <strong>Accept</strong> in the cookie banner. If you click Decline, no cookies are set and Hotjar is not loaded.</p>
+
+        <table class="cookie-table">
+            <thead>
+                <tr>
+                    <th>Cookie</th>
+                    <th>Provider</th>
+                    <th>Purpose</th>
+                    <th>Expiry</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>_hjSessionUser_*</td>
+                    <td>Hotjar</td>
+                    <td>Identifies a unique visitor across sessions</td>
+                    <td>365 days</td>
+                </tr>
+                <tr>
+                    <td>_hjSession_*</td>
+                    <td>Hotjar</td>
+                    <td>Holds current session data</td>
+                    <td>30 minutes</td>
+                </tr>
+                <tr>
+                    <td>_hjFirstSeen</td>
+                    <td>Hotjar</td>
+                    <td>Identifies first-time visitors</td>
+                    <td>Session</td>
+                </tr>
+                <tr>
+                    <td>_hjIncludedInSessionSample_*</td>
+                    <td>Hotjar</td>
+                    <td>Determines if the session is included in sampling</td>
+                    <td>2 minutes</td>
+                </tr>
+                <tr>
+                    <td>tvd-consent</td>
+                    <td>tiesvandun.nl</td>
+                    <td>Stores your cookie consent choice (localStorage)</td>
+                    <td>Persistent</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <strong>Opt out of Hotjar at any time:</strong> Visit <a href="https://www.hotjar.com/legal/compliance/opt-out" target="_blank">hotjar.com/legal/compliance/opt-out</a> to permanently opt out of Hotjar tracking across all websites.
+        </div>
+    </div>
+
+    <div class="policy-section">
+        <h2>4. Third-party processors</h2>
+        <p>We share data with the following third party acting as a data processor on our behalf:</p>
+        <ul>
+            <li>
+                <strong>Hotjar Ltd.</strong> — 2 Marina Street, Pinto Wharf, Abate Rigord St., Ta' Xbiex XBX 1180, Malta.
+                Hotjar processes behavioural analytics data. Data is transferred under the EU Standard Contractual Clauses (SCCs).
+                <a href="https://www.hotjar.com/legal/policies/privacy/" target="_blank">Hotjar Privacy Policy →</a>
+            </li>
+        </ul>
+        <p>No other third parties receive personal data from this website. We do not sell, rent, or trade any data.</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>5. Data retention</h2>
+        <p>Hotjar retains session and heatmap data for <strong>365 days</strong>, after which it is automatically deleted from their systems. You can request deletion of your data at any time (see Section 6).</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>6. Your rights under the GDPR</h2>
+        <p>As a person in the European Union, you have the following rights regarding your personal data:</p>
+        <ul>
+            <li><strong>Access (Art. 15)</strong> — request a copy of the data we hold about you</li>
+            <li><strong>Rectification (Art. 16)</strong> — request correction of inaccurate data</li>
+            <li><strong>Erasure (Art. 17)</strong> — request deletion of your data ("right to be forgotten")</li>
+            <li><strong>Restriction (Art. 18)</strong> — request that we limit how we process your data</li>
+            <li><strong>Portability (Art. 20)</strong> — receive your data in a structured, machine-readable format</li>
+            <li><strong>Object (Art. 21)</strong> — object to processing based on our legitimate interests</li>
+            <li><strong>Withdraw consent</strong> — withdraw your cookie consent at any time without affecting prior processing</li>
+        </ul>
+        <p>To exercise any of these rights, contact us at <a href="mailto:management@tiesvandun.nl">management@tiesvandun.nl</a>. We will respond within 30 days.</p>
+
+        <div class="callout">
+            <strong>Right to lodge a complaint:</strong> If you believe your data has been processed unlawfully, you can file a complaint with the Dutch supervisory authority: <a href="https://www.autoriteitpersoonsgegevens.nl" target="_blank">Autoriteit Persoonsgegevens</a>.
+        </div>
+    </div>
+
+    <div class="policy-section">
+        <h2>7. Changes to this policy</h2>
+        <p>We may update this privacy policy when our data practices change. The "last updated" date at the top of this page reflects the most recent revision. Continued use of the site after changes are posted constitutes acceptance of the updated policy.</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>8. Contact</h2>
+        <p>For any questions about this privacy policy or data requests:</p>
+        <ul>
+            <li><strong>Email:</strong> <a href="mailto:management@tiesvandun.nl">management@tiesvandun.nl</a></li>
+            <li><strong>Website:</strong> <a href="index.html">tiesvandun.nl</a></li>
+        </ul>
+    </div>
+
+</div>
+
+<footer>
+    <p class="footer-copy">&copy; 2025 Ties van Dun. All rights reserved.</p>
+    <div class="footer-links">
+        <a href="index.html">Back to site</a>
+        <a href="mailto:management@tiesvandun.nl">Contact</a>
+    </div>
+</footer>
+
+</body>
+</html>
