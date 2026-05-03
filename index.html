@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ties van Dun</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black: #080808;
+            --white: #f0ece6;
+            --red: #ff1e1e;
+            --grey: #161616;
+            --mid: #2a2a2a;
+            --muted: #666;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Space Grotesk', sans-serif;
+            cursor: none;
+            overflow-x: hidden;
+        }
+
+        /* ── CURSOR ── */
+        #cur {
+            position: fixed;
+            width: 10px; height: 10px;
+            background: var(--red);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width .25s, height .25s, opacity .25s;
+        }
+        #cur-ring {
+            position: fixed;
+            width: 36px; height: 36px;
+            border: 1px solid rgba(240,236,230,.35);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+        }
+
+        /* ── GRAIN ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2000;
+            opacity: .03;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: grain .4s steps(3) infinite;
+        }
+        @keyframes grain {
+            0%   { background-position: 0 0; }
+            25%  { background-position: -60px 40px; }
+            50%  { background-position: 80px -30px; }
+            75%  { background-position: -40px -70px; }
+            100% { background-position: 60px 20px; }
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 52px;
+            transition: background .4s, backdrop-filter .4s;
+        }
+        nav.scrolled {
+            background: rgba(8,8,8,.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+        .nav-logo {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .32em;
+            text-decoration: none;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+        .nav-links {
+            display: flex;
+            gap: 44px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            transition: color .3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 1px;
+            background: var(--red);
+            transition: width .35s ease;
+        }
+        .nav-links a:hover { color: var(--white); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-email {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: .05em;
+            transition: color .3s;
+        }
+        .nav-email:hover { color: var(--white); }
+
+        /* ── HERO ── */
+        #hero {
+            height: 100svh;
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* AIDA photo — left half */
+        .hero-photo {
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+            filter: grayscale(15%) brightness(.88);
+            transition: filter 8s ease;
+        }
+        #hero:hover .hero-photo img {
+            filter: grayscale(0%) brightness(.95);
+        }
+        /* fade right edge into black */
+        .hero-photo::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, transparent 55%, var(--black) 100%);
+        }
+        /* subtle bottom fade */
+        .hero-photo::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(8,8,8,.4) 0%, transparent 30%, transparent 60%, rgba(8,8,8,.6) 100%);
+            z-index: 1;
+        }
+
+        /* model credit — bottom left over the photo */
+        .model-credit {
+            position: absolute;
+            bottom: 36px;
+            left: 40px;
+            z-index: 2;
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            letter-spacing: .3em;
+            color: rgba(240,236,230,.45);
+            text-transform: uppercase;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+
+        /* right half — text */
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 52px 52px 64px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* animated grid behind text */
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 70%, transparent 100%);
+            animation: grid-drift 18s linear infinite;
+        }
+        @keyframes grid-drift {
+            from { background-position: 0 0, 0 0; }
+            to   { background-position: 0 64px, 64px 0; }
+        }
+
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .35em;
+            color: var(--red);
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        /* ── HERO TITLE ── */
+        .hero-title {
+            position: relative;
+            line-height: .9;
+            letter-spacing: -.04em;
+            font-weight: 700;
+        }
+        .title-first {
+            display: block;
+            font-size: clamp(80px, 11vw, 160px);
+            position: relative;
+        }
+        .title-last {
+            display: block;
+            font-size: clamp(40px, 5.5vw, 80px);
+            color: var(--muted);
+            letter-spacing: -.02em;
+            margin-top: 8px;
+        }
+
+        /* glitch on TIES only */
+        .glitch { position: relative; display: inline-block; user-select: none; }
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+        .glitch::before {
+            color: var(--red);
+            clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+            animation: gl-top 5s steps(1) infinite;
+        }
+        .glitch::after {
+            color: #00e5ff;
+            clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%);
+            animation: gl-bot 5s steps(1) infinite;
+        }
+        @keyframes gl-top {
+            0%,84%,100% { transform: none; opacity: 0; }
+            85%  { transform: translateX(-6px) skewX(-8deg); opacity: .9; }
+            87%  { transform: translateX(4px); opacity: .7; }
+            89%  { transform: translateX(-2px) skewX(3deg); opacity: .85; }
+            91%  { transform: translateX(6px); opacity: 0; }
+        }
+        @keyframes gl-bot {
+            0%,80%,100% { transform: none; opacity: 0; }
+            81%  { transform: translateX(7px) skewX(10deg); opacity: .85; }
+            83%  { transform: translateX(-5px); opacity: .65; }
+            85%  { transform: translateX(3px); opacity: 0; }
+        }
+
+        .hero-sub {
+            margin-top: 32px;
+            font-size: 14px;
+            font-weight: 300;
+            color: var(--muted);
+            line-height: 1.75;
+            max-width: 380px;
+            letter-spacing: .01em;
+            position: relative;
+        }
+
+        .hero-actions {
+            margin-top: 40px;
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            position: relative;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 34px;
+            border: 1px solid var(--white);
+            color: var(--white);
+            text-decoration: none;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            transition: background .3s, color .3s;
+        }
+        .btn:hover { background: var(--white); color: var(--black); }
+        .btn-ghost {
+            border-color: transparent;
+            padding-left: 0;
+            color: var(--red);
+        }
+        .btn-ghost::after { content: '→'; transition: transform .3s; }
+        .btn-ghost:hover { background: transparent; color: var(--white); border-color: transparent; }
+        .btn-ghost:hover::after { transform: translateX(6px); }
+
+        /* scroll hint */
+        .scroll-hint {
+            position: absolute;
+            bottom: 52px; right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            letter-spacing: .28em;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+        .scroll-line {
+            width: 1px; height: 52px;
+            background: linear-gradient(to bottom, var(--muted), transparent);
+            animation: scrollpulse 2.2s ease-in-out infinite;
+        }
+        @keyframes scrollpulse {
+            0%,100% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+            50%      { transform: scaleY(0); transform-origin: top; opacity: 0; }
+        }
+
+        /* ── SHARED ── */
+        .section-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .35em;
+            color: var(--red);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .section-label::before {
+            content: '';
+            width: 20px; height: 1px;
+            background: var(--red);
+            flex-shrink: 0;
+        }
+        .divider { border: none; border-top: 1px solid var(--grey); }
+
+        /* ── ABOUT ── */
+        #about {
+            padding: 140px 52px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        .about-text h2 {
+            font-size: clamp(32px, 4vw, 58px);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -.03em;
+            margin-bottom: 28px;
+        }
+        .about-text p {
+            font-size: 15px;
+            line-height: 1.85;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+        .about-text p strong {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .about-right { display: flex; flex-direction: column; gap: 2px; }
+
+        /* second AIDA photo in about */
+        .about-photo {
+            width: 100%;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 2px;
+        }
+        .about-photo img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            filter: grayscale(15%);
+            transition: transform .8s cubic-bezier(.25,.46,.45,.94), filter .5s;
+        }
+        .about-photo:hover img {
+            transform: scale(1.04);
+            filter: grayscale(0%);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+        }
+        .stat {
+            background: var(--grey);
+            padding: 32px 24px;
+            transition: background .3s;
+        }
+        .stat:hover { background: var(--mid); }
+        .stat-n {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -.04em;
+        }
+        .stat-n em { color: var(--red); font-style: normal; }
+        .stat-l {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .15em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        /* ── GALLERY ── */
+        #gallery { padding: 140px 0; }
+
+        .gallery-head {
+            padding: 0 52px;
+            margin-bottom: 52px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .gallery-head h2 {
+            font-size: clamp(32px, 4vw, 58px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            margin-top: 4px;
+        }
+        .gallery-count {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .2em;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .gscroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0 52px 24px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            cursor: grab;
+        }
+        .gscroll::-webkit-scrollbar { display: none; }
+        .gscroll:active { cursor: grabbing; }
+
+        .gtrack {
+            display: flex;
+            gap: 12px;
+            width: max-content;
+            align-items: flex-end;
+        }
+
+        .gitem {
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .gitem:nth-child(1) { width: 340px; height: 510px; }
+        .gitem:nth-child(2) { width: 520px; height: 350px; }
+        .gitem:nth-child(3) { width: 340px; height: 510px; }
+        .gitem:nth-child(4) { width: 520px; height: 350px; }
+        .gitem:nth-child(5) { width: 340px; height: 510px; }
+
+        .gitem img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+            filter: grayscale(20%) brightness(.88);
+            transition: transform .7s cubic-bezier(.25,.46,.45,.94), filter .5s;
+        }
+        .gitem:hover img {
+            transform: scale(1.06);
+            filter: grayscale(0%) brightness(1);
+        }
+
+        .goverlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(8,8,8,.85) 0%, transparent 55%);
+            opacity: 0;
+            transition: opacity .4s;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px 22px;
+        }
+        .gitem:hover .goverlay { opacity: 1; }
+        .glabel {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+        }
+
+        .gitem::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 0;
+            border-color: var(--red) transparent transparent transparent;
+            transition: border-width .4s ease;
+        }
+        .gitem:hover::after { border-width: 26px 26px 0 0; }
+
+        /* ── MIXTAPES ── */
+        #mixtapes { padding: 140px 52px; }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 52px;
+        }
+        .section-head h2 {
+            font-size: clamp(32px, 4vw, 58px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            margin-top: 4px;
+        }
+
+        .mix-list { list-style: none; }
+        .mix-item {
+            display: grid;
+            grid-template-columns: 44px 1fr auto auto;
+            gap: 24px;
+            align-items: center;
+            padding: 22px 0;
+            border-bottom: 1px solid var(--grey);
+            transition: padding .25s, background .25s, margin .25s;
+        }
+        .mix-item:first-child { border-top: 1px solid var(--grey); }
+        .mix-item:hover {
+            padding-left: 18px; padding-right: 18px;
+            margin: 0 -18px;
+            background: var(--grey);
+        }
+        .mix-n {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+        }
+        .mix-title { font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+        .mix-meta {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+            letter-spacing: .05em;
+        }
+        .mix-dur {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+        }
+        .mix-btn {
+            width: 34px; height: 34px;
+            border: 1px solid var(--mid);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--muted);
+            transition: border-color .3s, background .3s, color .3s;
+            flex-shrink: 0;
+        }
+        .mix-item:hover .mix-btn {
+            border-color: var(--red);
+            background: var(--red);
+            color: var(--white);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--grey);
+            padding: 72px 52px 56px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            align-items: end;
+        }
+        .footer-name {
+            font-size: clamp(28px, 4vw, 52px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+            color: var(--grey);
+            transition: color .4s;
+            text-transform: uppercase;
+        }
+        .footer-name:hover { color: var(--mid); }
+
+        .footer-socials { display: flex; flex-direction: column; gap: 14px; }
+        .social {
+            color: var(--muted);
+            text-decoration: none;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: color .3s;
+        }
+        .social::before {
+            content: '';
+            width: 14px; height: 1px;
+            background: currentColor;
+            transition: width .35s;
+            flex-shrink: 0;
+        }
+        .social:hover { color: var(--white); }
+        .social:hover::before { width: 30px; }
+
+        .footer-right { text-align: right; }
+        .footer-email {
+            display: block;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: color .3s;
+        }
+        .footer-email:hover { color: var(--red); }
+        .footer-copy {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+        .footer-credit {
+            margin-top: 6px;
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--mid);
+            letter-spacing: .08em;
+        }
+        .footer-credit a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .3s;
+        }
+        .footer-credit a:hover { color: var(--white); }
+
+        /* ── REVEAL ── */
+        .rev {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity .9s ease, transform .9s ease;
+        }
+        .rev.in { opacity: 1; transform: none; }
+        .rev-d1 { transition-delay: .1s; }
+        .rev-d2 { transition-delay: .2s; }
+        .rev-d3 { transition-delay: .3s; }
+
+        /* ── MOBILE ── */
+        @media (max-width: 768px) {
+            nav { padding: 20px 24px; }
+            .nav-email { display: none; }
+            .nav-links { gap: 20px; }
+
+            #hero {
+                grid-template-columns: 1fr;
+                grid-template-rows: 50vh 1fr;
+            }
+            .hero-photo::after {
+                background: linear-gradient(to bottom, transparent 55%, var(--black) 100%);
+            }
+            .hero-content { padding: 32px 24px 48px; }
+            .scroll-hint { display: none; }
+            .model-credit { display: none; }
+
+            #about { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+            .about-photo { aspect-ratio: 4/3; }
+
+            #gallery { padding: 80px 0; }
+            .gallery-head { padding: 0 24px; flex-direction: column; align-items: flex-start; gap: 4px; }
+            .gscroll { padding: 0 24px 16px; }
+            .gitem:nth-child(odd)  { width: 240px; height: 360px; }
+            .gitem:nth-child(even) { width: 360px; height: 240px; }
+
+            #mixtapes { padding: 80px 24px; }
+            .mix-item { grid-template-columns: 36px 1fr auto; }
+            .mix-btn { display: none; }
+
+            footer { grid-template-columns: 1fr; padding: 48px 24px 40px; }
+            .footer-right { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+    <a href="#" class="nav-logo">Ties van Dun</a>
+    <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#mixtapes">Mixtapes</a></li>
+        <li><a href="#mixtapes">Tracks</a></li>
+    </ul>
+    <a href="mailto:management@tiesvandun.nl" class="nav-email">management@tiesvandun.nl</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+
+    <!-- AIDA photo — visual hook -->
+    <div class="hero-photo">
+        <img
+            src="https://tiesvandun.nl/wp-content/uploads/2026/01/image00001-683x1024.jpeg"
+            alt="AIDA"
+            loading="eager"
+        >
+        <span class="model-credit">Model: AIDA</span>
+    </div>
+
+    <!-- artist content -->
+    <div class="hero-content">
+        <p class="eyebrow">DJ &middot; Producer &middot; Peak-time Techno</p>
+
+        <h1 class="hero-title">
+            <span class="glitch title-first" data-text="TIES">TIES</span>
+            <span class="title-last">VAN DUN</span>
+        </h1>
+
+        <p class="hero-sub">Dedicated to keeping the peak-time techno sound alive — blending modern driving grooves with the raw, acid-infused energy of the early days.</p>
+
+        <div class="hero-actions">
+            <a href="#about" class="btn">Discover</a>
+            <a href="#mixtapes" class="btn btn-ghost">Listen now</a>
+        </div>
+
+        <div class="scroll-hint">
+            <div class="scroll-line"></div>
+            <span>Scroll</span>
+        </div>
+    </div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ── ABOUT ── -->
+<section id="about">
+    <div class="about-text rev">
+        <p class="section-label">About</p>
+        <h2>Keeping peak-time techno alive.</h2>
+        <p>I am Ties van Dun, a <strong>20-year-old DJ and producer</strong> dedicated to keeping the peak-time techno sound alive. I blend modern driving techno with the raw, acid-infused energy of the early days — constructing mixes that emphasise tension, flow, and high-energy moments.</p>
+        <p>My goal is to bring new life to peak-time and acid-driven sounds and show that <strong>techno can be both powerful and emotional.</strong></p>
+        <p>Active since age 18. Performed at an <strong>Indira Paganotto showcase</strong> at Amsterdam Dance Event 2023. Won the <strong>Klaudia Gawlas competition</strong> in Germany — earning a mainstage opening slot from over 200 submissions.</p>
+    </div>
+
+    <div class="about-right rev rev-d1">
+        <!-- second AIDA photo -->
+        <div class="about-photo">
+            <img
+                src="https://tiesvandun.nl/wp-content/uploads/2026/01/image00010-768x1024.jpeg"
+                alt="AIDA"
+                loading="lazy"
+            >
+        </div>
+
+        <!-- stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-n">20</div>
+                <div class="stat-l">Years old</div>
+            </div>
+            <div class="stat">
+                <div class="stat-n">200<em>+</em></div>
+                <div class="stat-l">Submissions beaten</div>
+            </div>
+            <div class="stat">
+                <div class="stat-n">ADE</div>
+                <div class="stat-l">2023 showcase</div>
+            </div>
+            <div class="stat">
+                <div class="stat-n">NL<em>+</em></div>
+                <div class="stat-l">Based in</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── GALLERY ── -->
+<section id="gallery">
+    <div class="gallery-head rev">
+        <div>
+            <p class="section-label">Gallery</p>
+            <h2>In the moment.</h2>
+        </div>
+        <span class="gallery-count">05 images</span>
+    </div>
+
+    <div class="gscroll" id="gscroll">
+        <div class="gtrack">
+            <div class="gitem">
+                <img src="https://tiesvandun.nl/wp-content/uploads/2026/01/image00001-683x1024.jpeg" alt="" loading="lazy">
+                <div class="goverlay"><span class="glabel">2025</span></div>
+            </div>
+            <div class="gitem">
+                <img src="https://tiesvandun.nl/wp-content/uploads/2025/12/image00007-1024x684.jpeg" alt="" loading="lazy">
+                <div class="goverlay"><span class="glabel">2025</span></div>
+            </div>
+            <div class="gitem">
+                <img src="https://tiesvandun.nl/wp-content/uploads/2026/01/image00010-768x1024.jpeg" alt="" loading="lazy">
+                <div class="goverlay"><span class="glabel">2025</span></div>
+            </div>
+            <div class="gitem">
+                <img src="https://tiesvandun.nl/wp-content/uploads/2025/12/image00009-1024x683.jpeg" alt="" loading="lazy">
+                <div class="goverlay"><span class="glabel">2024</span></div>
+            </div>
+            <div class="gitem">
+                <img src="https://tiesvandun.nl/wp-content/uploads/2025/12/image00003-1024x683.jpeg" alt="" loading="lazy">
+                <div class="goverlay"><span class="glabel">2024</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── TRACKS + MIXTAPES ── -->
+<section id="mixtapes">
+    <div class="section-head rev">
+        <div>
+            <p class="section-label">Tracks</p>
+            <h2>Original releases.</h2>
+        </div>
+        <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" class="btn btn-ghost" target="_blank">Spotify</a>
+    </div>
+
+    <ul class="mix-list">
+        <li class="mix-item rev">
+            <span class="mix-n">01</span>
+            <div>
+                <div class="mix-title">Into My Brain</div>
+                <div class="mix-meta">Original Mix &middot; Renesanz Records &middot; 2024</div>
+            </div>
+            <span class="mix-dur">Into My Brain EP</span>
+            <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" class="mix-btn">&#8599;</a>
+        </li>
+        <li class="mix-item rev rev-d1">
+            <span class="mix-n">02</span>
+            <div>
+                <div class="mix-title">One With The Universe</div>
+                <div class="mix-meta">Original Mix &middot; Renesanz Records &middot; 2024</div>
+            </div>
+            <span class="mix-dur">Into My Brain EP</span>
+            <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" class="mix-btn">&#8599;</a>
+        </li>
+        <li class="mix-item rev rev-d2">
+            <span class="mix-n">03</span>
+            <div>
+                <div class="mix-title">Techno Rampage, Vol. 19</div>
+                <div class="mix-meta">Compilation Appearance &middot; 2024</div>
+            </div>
+            <span class="mix-dur">Compilation</span>
+            <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" class="mix-btn">&#8599;</a>
+        </li>
+        <li class="mix-item rev rev-d3">
+            <span class="mix-n">04</span>
+            <div>
+                <div class="mix-title">High Energy Hits 017</div>
+                <div class="mix-meta">Compilation Appearance &middot; 2024</div>
+            </div>
+            <span class="mix-dur">Compilation</span>
+            <a href="https://open.spotify.com/artist/5aELquFewKdTTRvqJwp6yt" target="_blank" class="mix-btn">&#8599;</a>
+        </li>
+    </ul>
+
+    <!-- Mixtapes subsection -->
+    <div class="section-head rev" style="margin-top: 80px;">
+        <div>
+            <p class="section-label">Mixtapes</p>
+            <h2>DJ mixes.</h2>
+        </div>
+        <a href="https://soundcloud.com/user-256178592" class="btn btn-ghost" target="_blank">SoundCloud</a>
+    </div>
+
+    <ul class="mix-list">
+        <li class="mix-item rev">
+            <span class="mix-n">010</span>
+            <div>
+                <div class="mix-title">Techno Mixtape 010</div>
+                <div class="mix-meta">Hard Techno &middot; Festival Season Kick Off</div>
+            </div>
+            <span class="mix-dur">SoundCloud</span>
+            <a href="https://soundcloud.com/user-256178592/techno-mixtape-010-hard-techno" target="_blank" class="mix-btn">&#9654;</a>
+        </li>
+        <li class="mix-item rev rev-d1">
+            <span class="mix-n">009</span>
+            <div>
+                <div class="mix-title">Techno Mixtape 09</div>
+                <div class="mix-meta">Deep &amp; Dark Techno</div>
+            </div>
+            <span class="mix-dur">SoundCloud</span>
+            <a href="https://soundcloud.com/user-256178592/techno-mixtape-09-deep-dark" target="_blank" class="mix-btn">&#9654;</a>
+        </li>
+        <li class="mix-item rev rev-d2">
+            <span class="mix-n">004</span>
+            <div>
+                <div class="mix-title">Techno Mixtape 04</div>
+                <div class="mix-meta">Peak-time Techno</div>
+            </div>
+            <span class="mix-dur">SoundCloud</span>
+            <a href="https://soundcloud.com/user-256178592/techno-mixtape-04-ties-van-dun" target="_blank" class="mix-btn">&#9654;</a>
+        </li>
+        <li class="mix-item rev rev-d3">
+            <span class="mix-n">003</span>
+            <div>
+                <div class="mix-title">Techno Mixtape 03</div>
+                <div class="mix-meta">Psytechno &amp; Hard Techno</div>
+            </div>
+            <span class="mix-dur">SoundCloud</span>
+            <a href="https://soundcloud.com/user-256178592/techno-mixtape-psytechno" target="_blank" class="mix-btn">&#9654;</a>
+        </li>
+        <li class="mix-item rev rev-d3">
+            <span class="mix-n">002</span>
+            <div>
+                <div class="mix-title">Techno Mixtape 02</div>
+                <div class="mix-meta">Hard Techno</div>
+            </div>
+            <span class="mix-dur">SoundCloud</span>
+            <a href="https://soundcloud.com/user-256178592/techno-mixtape-hard-techno-02" target="_blank" class="mix-btn">&#9654;</a>
+        </li>
+    </ul>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+    <div class="footer-name">Ties<br>van Dun</div>
+
+    <div class="footer-socials">
+        <a href="https://youtube.com/@tiesvandun"    class="social" target="_blank">YouTube</a>
+        <a href="https://instagram.com/tiesvandun"   class="social" target="_blank">Instagram</a>
+        <a href="https://soundcloud.com/tiesvandun"  class="social" target="_blank">SoundCloud</a>
+        <a href="https://spotify.com"                class="social" target="_blank">Spotify</a>
+    </div>
+
+    <div class="footer-right">
+        <a href="mailto:management@tiesvandun.nl" class="footer-email">management@tiesvandun.nl</a>
+        <p class="footer-copy">&copy; 2025 Ties van Dun. All rights reserved.</p>
+        <p class="footer-credit">Designed by <a href="https://linkedin.com/in/juliandehaas" target="_blank">Julian de Haas</a></p>
+    </div>
+</footer>
+
+<script>
+// ── CURSOR
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cur.style.left = mx + 'px';
+    cur.style.top  = my + 'px';
+});
+(function tick() {
+    rx += (mx - rx) * .09;
+    ry += (my - ry) * .09;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(tick);
+})();
+document.querySelectorAll('a, .mix-item, .gitem, .stat, .about-photo').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+        cur.style.width = cur.style.height = '18px';
+        ring.style.width = ring.style.height = '56px';
+    });
+    el.addEventListener('mouseleave', () => {
+        cur.style.width = cur.style.height = '10px';
+        ring.style.width = ring.style.height = '36px';
+    });
+});
+
+// ── NAV
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// ── REVEAL
+const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: .1 });
+document.querySelectorAll('.rev').forEach(el => io.observe(el));
+
+// ── DRAG GALLERY
+const gs = document.getElementById('gscroll');
+let down = false, sx = 0, sl = 0;
+gs.addEventListener('mousedown', e => { down = true; sx = e.pageX - gs.offsetLeft; sl = gs.scrollLeft; });
+gs.addEventListener('mouseleave', () => down = false);
+gs.addEventListener('mouseup',    () => down = false);
+gs.addEventListener('mousemove', e => {
+    if (!down) return;
+    e.preventDefault();
+    gs.scrollLeft = sl - (e.pageX - gs.offsetLeft - sx) * 1.6;
+});
+</script>
+
+</body>
+</html>
